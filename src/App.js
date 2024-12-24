@@ -1,31 +1,50 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
-import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { AppProvider } from "./context/AppContext";
+import { AdminProvider } from "./context/AdminContext";
+
+// Layout component for customer routes
+const CustomerLayout = () => (
+	<div className="min-h-screen bg-gray-50">
+		<Header />
+		<Outlet />
+	</div>
+);
 
 const App = () => {
 	return (
-		<BrowserRouter>
+		<AdminProvider>
 			<AppProvider>
-				<div className="min-h-screen bg-gray-50">
-					<Header />
-					<Routes>
-						<Route path="/" element={<Home />} />
+				<Routes>
+					{/* Admin Routes */}
+					<Route path="/admin/login" element={<AdminLogin />} />
+					<Route
+						path="/admin/*"
+						element={
+							<ProtectedRoute>
+								<AdminDashboard />
+							</ProtectedRoute>
+						}
+					/>
+
+					{/* Customer Routes */}
+					<Route element={<CustomerLayout />}>
+						<Route index element={<Home />} />
 						<Route path="/product/:id" element={<ProductDetails />} />
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/wishlist" element={<Wishlist />} />
-						<Route path="/profile" element={<Profile />} />
-						<Route path="/settings" element={<Settings />} />
-					</Routes>
-				</div>
+					</Route>
+				</Routes>
 			</AppProvider>
-		</BrowserRouter>
+		</AdminProvider>
 	);
 };
 
