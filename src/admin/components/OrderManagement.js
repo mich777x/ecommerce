@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Search, Filter, ChevronDown, Package } from "lucide-react";
+import { Search } from "lucide-react";
 import { useAdmin } from "../../context/AdminContext";
 
 const OrderManagement = () => {
-	const { state, dispatch } = useAdmin();
+	const { dispatch } = useAdmin();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [statusFilter, setStatusFilter] = useState("all");
 	const [dateRange, setDateRange] = useState("all");
@@ -13,8 +13,8 @@ const OrderManagement = () => {
 		{
 			id: "1",
 			customer: {
-				name: "John Doe",
-				email: "john@example.com",
+				name: "DemoUser",
+				email: "DemoUser@example.com",
 			},
 			items: [{ id: 1, name: "Wireless Earbuds", quantity: 1, price: 299.99 }],
 			total: 299.99,
