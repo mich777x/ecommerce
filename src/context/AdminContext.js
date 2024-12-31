@@ -4,7 +4,7 @@ import initialProducts from "../data/products";
 const AdminContext = createContext();
 
 const initialState = {
-	products: [], // Will be initialized with data from products.js
+	products: [],
 	banners: [
 		{
 			id: 1,

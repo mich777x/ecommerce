@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { useApp } from "../context/AppContext";
 import { useAdmin } from "../context/AdminContext";
-import { Filter, ArrowLeft, ArrowRight, Search } from "lucide-react";
+import { ArrowLeft, ArrowRight, Search } from "lucide-react";
 
 const Home = () => {
 	const { state: appState, dispatch: appDispatch } = useApp();

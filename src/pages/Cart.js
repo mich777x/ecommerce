@@ -26,34 +26,6 @@ const Cart = () => {
 		);
 	}
 
-	const handleCheckout = () => {
-		const newOrder = {
-			customer: {
-				name: "Demo Customer", // In a real app, get from user profile
-				email: "demo@example.com",
-			},
-			items: cart.map((item) => ({
-				id: item.id,
-				name: item.name,
-				quantity: item.quantity,
-				price: item.price,
-			})),
-			total: total,
-			status: "pending",
-			date: new Date().toISOString(),
-		};
-
-		dispatch({ type: "ADD_ORDER", payload: newOrder });
-
-		// Clear cart after order is placed
-		cart.forEach((item) => {
-			dispatch({ type: "REMOVE_FROM_CART", payload: item.id });
-		});
-
-		// Show success message
-		alert("Order placed successfully!");
-	};
-
 	return (
 		<div className="max-w-7xl mx-auto px-4 py-12">
 			<h2 className="text-2xl font-bold mb-8">Shopping Cart</h2>

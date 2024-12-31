@@ -1,83 +1,33 @@
-import React, { createContext, useContext, useReducer } from "react";
+// src/context/AppContext.js
+import React, { createContext, useContext, useReducer, useEffect } from "react";
 
 const AppContext = createContext();
 
 const initialState = {
 	cart: [],
 	wishlist: [],
-	searchQuery: "",
-	products: [], // Add products to main state
+	products: [],
 	filters: {
 		category: "all",
 		priceRange: [0, 5000],
 		sort: "featured",
 	},
-	banners: [
-		// Add banners to main state
-		{
-			id: 1,
-			title: "Premium Tech Deals",
-			description: "Exclusive offers on high-end electronics",
-			buttonText: "Shop Now",
-			bgColor: "bg-blue-600",
-		},
-		{
-			id: 2,
-			title: "New Arrivals",
-			description: "Discover the latest in technology",
-			buttonText: "Explore",
-			bgColor: "bg-purple-600",
-		},
-	],
 };
 
 const appReducer = (state, action) => {
 	switch (action.type) {
-		case "SET_PRODUCTS":
-			return {
-				...state,
-				products: action.payload,
-			};
-
-		case "ADD_PRODUCT":
-			return {
-				...state,
-				products: [...state.products, action.payload],
-			};
-
-		case "UPDATE_PRODUCT":
-			return {
-				...state,
-				products: state.products.map((product) => (product.id === action.payload.id ? action.payload : product)),
-			};
-
-		case "DELETE_PRODUCT":
-			return {
-				...state,
-				products: state.products.filter((product) => product.id !== action.payload),
-			};
-
-		// Banner Management Actions
-		case "UPDATE_BANNERS":
-			return {
-				...state,
-				banners: action.payload,
-			};
-		case "ADD_TO_CART": {
+		case "ADD_TO_CART":
 			const existingItem = state.cart.find((item) => item.id === action.payload.id);
-
 			if (existingItem) {
 				return {
 					...state,
 					cart: state.cart.map((item) => (item.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item)),
 				};
 			}
-
 			return {
 				...state,
 				cart: [...state.cart, { ...action.payload, quantity: 1 }],
 			};
-		}
 
 		case "REMOVE_FROM_CART":
 			return {
@@ -85,37 +35,41 @@ const appReducer = (state, action) => {
 				cart: state.cart.filter((item) => item.id !== action.payload),
 			};
 
-		case "UPDATE_QUANTITY":
+		case "UPDATE_CART_QUANTITY":
 			return {
 				...state,
 				cart: state.cart.map((item) => (item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item)),
 			};
 
-		case "TOGGLE_WISHLIST": {
-			const existingItem = state.wishlist.find((item) => item.id === action.payload.id);
-
+		case "CLEAR_CART":
 			return {
 				...state,
-				wishlist: existingItem ? state.wishlist.filter((item) => item.id !== action.payload.id) : [...state.wishlist, action.payload],
+				cart: [],
 			};
-		}
+
+		case "TOGGLE_WISHLIST":
+			const exists = state.wishlist.find((item) => item.id === action.payload.id);
+			if (exists) {
+				return {
+					...state,
+					wishlist: state.wishlist.filter((item) => item.id !== action.payload.id),
+				};
+			}
+			return {
+				...state,
+				wishlist: [...state.wishlist, action.payload],
+			};
+
+		case "CLEAR_WISHLIST":
+			return {
+				...state,
+				wishlist: [],
+			};
 
 		case "UPDATE_FILTERS":
 			return {
 				...state,
 				filters: { ...state.filters, ...action.payload },
-			};
-
-		case "SET_SEARCH_QUERY":
-			return {
-				...state,
-				searchQuery: action.payload,
-			};
-
-		case "CLEAR_SEARCH_QUERY":
-			return {
-				...state,
-				searchQuery: "",
 			};
 
 		default:
@@ -126,8 +80,24 @@ const appReducer = (state, action) => {
 export const AppProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(appReducer, initialState);
 
-	// For debugging
-	console.log("App Context State:", state);
+	// Load cart and wishlist from localStorage on mount
+	useEffect(() => {
+		const savedCart = localStorage.getItem("cart");
+		const savedWishlist = localStorage.getItem("wishlist");
+
+		if (savedCart) {
+			dispatch({ type: "SET_CART", payload: JSON.parse(savedCart) });
+		}
+		if (savedWishlist) {
+			dispatch({ type: "SET_WISHLIST", payload: JSON.parse(savedWishlist) });
+		}
+	}, []);
+
+	// Save cart and wishlist to localStorage when they change
+	useEffect(() => {
+		localStorage.setItem("cart", JSON.stringify(state.cart));
+		localStorage.setItem("wishlist", JSON.stringify(state.wishlist));
+	}, [state.cart, state.wishlist]);
 
 	return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
 };

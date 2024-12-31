@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BarChart3, Package, Settings, Layout, DollarSign, ShoppingBag, TrendingUp, Users } from "lucide-react";
+import { BarChart3, Package, Settings, Layout } from "lucide-react";
 import ProductManagement from "../admin/components/ProductManagement";
 import OrderManagement from "../admin/components/OrderManagement";
 import BannerManagement from "../admin/components/BannerManagement";
