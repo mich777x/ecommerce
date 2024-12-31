@@ -6,7 +6,6 @@ import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminLogin from "./pages/AdminLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AppProvider } from "./context/AppContext";
 import { AdminProvider } from "./context/AdminContext";
@@ -25,7 +24,6 @@ const App = () => {
 			<AppProvider>
 				<Routes>
 					{/* Admin Routes */}
-					<Route path="/admin/login" element={<AdminLogin />} />
 					<Route
 						path="/admin/*"
 						element={
